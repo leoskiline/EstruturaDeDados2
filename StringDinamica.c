@@ -48,6 +48,12 @@ void copiaStrings(String *source,String **destino)
 	}
 }
 
+void concatena(String *source1,String *source2,String **destino)
+{
+	copiaStrings(source1,&*destino);
+	copiaStrings(source2,&*destino);
+}
+
 void exibeString(String *valor)
 {
 	if(valor == NULL)
@@ -127,9 +133,11 @@ int main()
 {
 	String *string;
 	String *copia;
+	String *concatenada;
 	int cont = 0;
 	initString(&copia);
 	initString(&string);
+	initString(&concatenada);
 	insereLetraFim(&string,'L');
 	insereLetraFim(&string,'e');
 	insereLetraFim(&string,'o');
@@ -141,9 +149,13 @@ int main()
 	//reiniciaStringR(&string);
 	exibeStringR(string);
 	StringLength(string,&cont);
-	printf("\nTamanho da String %d \n",cont);
 	exibeStringContrarioR(string);
+	printf("\nTamanho da String %d ",cont);
 	copiaStrings(string,&copia);
 	printf("\nString copiada: ");
 	exibeStringR(copia);
+	concatena(copia,string,&concatenada);
+	printf("\nStrings Concatenadas: ");
+	exibeStringR(concatenada);
+	return 0;
 }
