@@ -36,17 +36,31 @@ void insereLetraFim(String **valor,char letra)
 
 void exibeString(String *valor)
 {
-	while(valor != NULL)
+	if(valor == NULL)
 	{
-		printf("%c",valor->letra);
-		valor = valor->prox;
+		printf("String Vazia");
 	}
+	else
+	{
+		while(valor != NULL)
+		{
+			printf("%c",valor->letra);
+			valor = valor->prox;
+		}
+	}
+	
 		
 }
 
 void reiniciaString(String **valor)
 {
-	
+	String *aux = *valor;
+	while(*valor != NULL)
+	{
+		aux = *valor;
+		*valor = (*valor)->prox;
+		free(aux);
+	}
 }
 
 int main()
@@ -61,5 +75,6 @@ int main()
 	insereLetraFim(&string,'r');
 	insereLetraFim(&string,'d');
 	insereLetraFim(&string,'o');
+	reiniciaString(&string);
 	exibeString(string);
 }
