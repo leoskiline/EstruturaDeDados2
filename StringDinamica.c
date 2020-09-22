@@ -164,15 +164,47 @@ void RemoveApartir(String **str,int nro,int start)
 	}
 }
 
+void buscaPosicao(String *str1,String *subs,int *local)
+{
+	*local = -1;
+	int pos = 0;
+	while(str1 !=NULL && *local==-1)
+	{
+		if(str1->letra == subs->letra) // Acha a Primeira Letra
+		{
+			String *auxStr1 = str1;
+			String *auxSubs = subs;
+			while(auxStr1!= NULL && auxSubs != NULL && auxStr1->letra == auxSubs->letra)
+			{
+				auxStr1 = auxStr1->prox;
+				auxSubs = auxSubs->prox;
+				
+			}
+			if(auxSubs == NULL)
+			{
+				*local = pos;
+			}
+		}
+		str1 = str1->prox;
+		pos++;
+	}
+}
+
 int main()
 {
 	String *string;
 	String *copia;
 	String *concatenada;
+	String *subs;
+	initString(&subs);
 	int cont = 0;
+	int local;
 	initString(&copia);
 	initString(&string);
 	initString(&concatenada);
+	insereLetraFim(&subs,'r');
+	insereLetraFim(&subs,'d');
+	insereLetraFim(&subs,'o');
 	insereLetraFim(&string,'L');
 	insereLetraFim(&string,'e');
 	insereLetraFim(&string,'o');
@@ -192,5 +224,7 @@ int main()
 	concatena(copia,string,&concatenada);
 	printf("\nStrings Concatenadas: ");
 	exibeStringR(concatenada);
+	buscaPosicao(string,subs,&local);
+	printf("Posicao da Substring: %d",local);
 	return 0;
 }
