@@ -129,6 +129,41 @@ void StringLength(String *valor,int *cont)
 	}
 }
 
+void RemoveApartir(String **str,int nro,int start)
+{
+	String *aux,*ant;
+	aux = *str;
+	if(start == 0)
+	{
+		while(*str!= NULL && nro > 0)
+		{
+			aux = *str;
+			*str=(*str)->prox;
+			free(aux);
+			nro--;
+		}
+	}
+	else
+	{
+		ant = *str;
+		while(aux!=NULL && start > 1)
+		{
+			ant=ant->prox;
+			start--;
+		}
+		if(ant!=NULL)
+		{
+			while(ant->prox != NULL && nro > 0)
+			{
+				aux = ant->prox;
+				ant->prox = aux->prox;
+				free(aux);
+				nro--;
+			}
+		}
+	}
+}
+
 int main()
 {
 	String *string;
