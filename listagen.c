@@ -7,6 +7,12 @@
 int main()
 {
 	ListaGen *L;
-	L = Cons(CriaT("a"),Cons(Cons(CriaT("b"),Cons(Cons(CriaT("c"),NULL),NULL)),NULL));
+	L = Cons(Cons(CriaT("a"),Cons(CriaT("b"),NULL)),Cons(CriaT("c"),NULL));
+	printf("Estrutura da Lista Gen: ");
+	exibe(L);
+	printf("\nExibindo Atomos: ");
+	exibeAtomo(L);
+	Kill(&L);
+	exibeAtomo(L);
 	return 0;
 }
