@@ -114,8 +114,6 @@ void Kill(ListaGen **L)
 		}			
 	}
 }
-
-
 ListaGen *CriaT(char *info)
 {
 	ListaGen *L = (ListaGen*)malloc(sizeof(ListaGen));
@@ -123,3 +121,30 @@ ListaGen *CriaT(char *info)
 	strcpy(L->no.info,info);
 	return L;
 }
+
+ListaGen *dup(ListaGen *L)
+{
+	if(Nula(L))
+	{	
+		return NULL;	
+	}
+	if(Atomo(L))
+		return CriaT(L->no.info);
+	return Cons( dup(Head(L)) ,dup(Tail(L)) );	
+}
+
+char compara(ListaGen *L,ListaGen *L2)
+{
+	if(Nula(L) && Nula(L2))
+		return 1;
+	if(Nula(L) || Nula(L2))
+		return 0;
+	if(Atomo(L) && Atomo(L2))
+		return !strcmp(L->no.info,L2->no.info);
+	if(Atomo(L) || Atomo(L2))
+		return 0;
+	return compara(Head(L),Head(L2)) && compara(Tail(L),Tail(L2));
+	
+}
+
+
