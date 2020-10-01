@@ -16,11 +16,50 @@ struct listagen
 	union info_lista no;
 };
 
+struct pilha
+{
+	struct listagen *lista;
+	struct pilha *prox;
+};
+typedef struct pilha Pilha;
+
 typedef struct listagen ListaGen;
 
 char Nula(ListaGen *L)
 {
 	return L==NULL;
+}
+
+void init(Pilha **P)
+{
+	*P = NULL;
+}
+
+char isEmpty(Pilha *P)
+{
+	return P==NULL;
+}
+
+void pop(Pilha **P,ListaGen **L)
+{
+	Pilha *aux;
+	if(!isEmpty(*P))
+	{
+		aux = *P;
+		*L = (*P)->lista;
+		*P = (*P)->prox;
+		free(aux);
+	}
+	else
+		*L = NULL;
+}
+
+void push(Pilha **P,ListaGen *L)
+{
+	Pilha *nova = (Pilha*)malloc(sizeof(Pilha));
+	nova->lista = L;
+	nova->prox = *P;
+	*P = nova;
 }
 
 char Atomo(ListaGen *L)
@@ -97,6 +136,67 @@ void exibeAtomo(ListaGen *L)
 			exibeAtomo(Tail(L));
 		}			
 	}
+}
+
+void exibeAtomoI(ListaGen *L)
+{
+	Pilha *P;
+	init(&P);
+	push(&P,L);
+	while(!isEmpty(P))
+	{
+		if(!Nula(L))
+		{
+			pop(&P,&L);
+			while(!Nula(L) && !Atomo(L))
+			{
+				push(&P,L);
+				L = Head(L);
+			}
+			if(Atomo(L))
+				printf("%s",L->no.info);
+		}
+		pop(&P,&L);
+		L = Tail(L);
+		if(!Nula(L))
+			push(&P,L);
+	}	
+}
+
+void deph(ListaGen *L,int nivel,int *maior)
+{
+	if(!Nula(L))
+	{
+		if(!Atomo(L))
+		{
+			if(nivel>*maior)
+				*maior = nivel;
+			deph(Head(L),nivel+1,&*maior);
+			deph(Tail(L),nivel,&*maior);
+		}
+		
+	}
+}
+
+void len(ListaGen *L,int *tam)
+{
+	while(!Nula(Tail(L)))
+	{
+		(*tam)++;
+		L = Tail(L);
+	}
+}
+
+ListaGen *append(ListaGen *L,ListaGen *L2)
+{
+	ListaGen *aux;
+	aux = L;
+	while(!Nula(Tail(aux)))
+		aux = Tail(aux);
+	
+	aux->no.lista.cauda = L2;
+	
+	return aux;
 }
 
 void Kill(ListaGen **L)
