@@ -178,12 +178,33 @@ void deph(ListaGen *L,int nivel,int *maior)
 	}
 }
 
-void len(ListaGen *L,int *tam)
+void len(ListaGen *L,int nivel,int *tam)
 {
-	while(!Nula(Tail(L)))
+	if(!Nula(L))
 	{
-		(*tam)++;
-		L = Tail(L);
+		if(!Atomo(L))
+		{
+			
+			len(Head(L),nivel+1,&*tam);
+			
+			len(Tail(L),nivel,&*tam);
+			*tam+=1;
+		}
+	}
+}
+
+void lenD(ListaGen *L,int nivel,int *comp,int *prof)
+{
+	if(!Nula(L))
+	{
+		if(!Atomo(L))
+		{
+			if(nivel>*prof)
+				*prof = nivel;
+			lenD(Head(L),nivel+1,&*comp,&*prof);
+			lenD(Tail(L),nivel,&*comp,&*prof);
+			*comp +=1;
+		}
 	}
 }
 
@@ -232,6 +253,7 @@ ListaGen *dup(ListaGen *L)
 		return CriaT(L->no.info);
 	return Cons( dup(Head(L)) ,dup(Tail(L)) );	
 }
+
 
 char compara(ListaGen *L,ListaGen *L2)
 {

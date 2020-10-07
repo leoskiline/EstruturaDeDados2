@@ -10,8 +10,15 @@ typedef struct matrizEsp MatEsp;
 
 void verificaOcupado(MatEsp *vetlin[],int lin,int col,MatEsp **aux)
 {
-	
+	MatEsp *p = vetlin[lin];
+	while(p != NULL && col>p->col)
+		p = p->pl;
+	if(p!= NULL && col==p->col)
+		*aux = p;
+	else
+		*aux = NULL;
 }
+
 
 
 void insere(MatEsp *vetlin[],MatEsp *vetcol[],int lin,int col,int valor)
@@ -67,10 +74,72 @@ void insere(MatEsp *vetlin[],MatEsp *vetcol[],int lin,int col,int valor)
 			}
 			else
 			{
-				
+				ant = vetcol[col];
+				aux = ant->pc;
+				while(aux != NULL && lin > aux->lin)
+				{
+					ant = aux;
+					aux = aux->pc;
+				}
+				ant->pc = nova;
+				nova->pc = aux;
 			}
 		}
 	}
 	else
 		printf("As coordenadas estao fora da Matriz!\n");
+}
+
+void exibe(MatEsp *vetlin[])
+{
+	int i,j;
+	MatEsp *aux;
+	for(i = 0;i < nl;i++)
+	{
+		for(j = 0;j<nc;j++)
+		{
+			verificaOcupado(vetlin,i,j,&aux);
+			if(aux != NULL)
+				printf("%d ",aux->valor);
+			else
+				printf("0 ");
+		}
+		printf("\n");
+	}
+}
+
+void inicializa(MatEsp *vetlin[],MatEsp *vetcol[])
+{
+	int i;
+	for(i = 0 ; i < nl;i++)
+		vetlin[i] = NULL;
+	for(i = 0 ; i < nc;i++)
+		vetcol[i] = NULL;
+}
+
+void soma(MatEsp *vetlinA[],MatEsp *vetlinB[],MatEsp *vetlinC[],MatEsp *vetcolC[])
+{
+	int i,j,soma;
+	MatEsp *aux1,*aux2;
+	for(i = 0;i < nl;i++)
+	{
+		for(j=0;j<nc;j++)
+		{
+			verificaOcupado(vetlinA,i,j,&aux1);
+			verificaOcupado(vetlinB,i,j,&aux2);
+			soma = 0;
+			if(aux1!=NULL)
+				soma = aux1->valor;
+			if(aux2!=NULL)
+				soma += aux2->valor;
+				
+			if(soma != 0)
+				insere(vetlinC,vetcolC,i,j,soma);
+		}
+	}
+}
+
+void multiplica(MatEsp *vetlinA[],MatEsp *vetlinB[],MatEsp *vetlinC[],MatEsp *vetcolC[])
+{
+	
 }
