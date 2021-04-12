@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "tadpilha.h"
 
 struct tree
 {
@@ -53,12 +54,45 @@ void insere(Tree **raiz, int info, int info_pai,char lado)
 	}
 }
 
+void verificarNivel(Tree *raiz,int info,int nivel)
+{
+	if(raiz != NULL)
+	{
+		if(raiz->info == info)
+		{
+			printf("Nivel Encontrado: %d",++nivel);
+		}
+		else
+		{
+			nivel++;
+			verificarNivel(raiz->esq,info,nivel);
+			verificarNivel(raiz->dir,info,nivel);
+			
+		}
+	}
+}
+
+int buscarPai(Tree *raiz,int info)
+{
+	Pilha *p;
+	init(&p);
+	int valorpai = 0;
+	return valorpai;
+}
+
 int main()
 {
 	Tree *raiz = NULL;
-	insere(&raiz,10,0,' ');
-	insere(&raiz,30,10, 'd');
-	insere(&raiz,50,30, 'e');
+	int nivel = 0;
+	insere(&raiz,1,0,' ');
+	insere(&raiz,2,1, 'e');
+	insere(&raiz,3,1, 'd');
+	insere(&raiz,4,2, 'e');
+	insere(&raiz,5,2, 'd');
+	insere(&raiz,6,3, 'e');
+	insere(&raiz,7,3, 'd');
+	//verificarNivel(raiz,7,nivel);
+	printf("\nValor do Pai: %d",buscarPai(raiz,4));
 	return 0;
 }
 
