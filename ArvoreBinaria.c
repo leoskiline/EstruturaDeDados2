@@ -72,17 +72,30 @@ void verificarNivel(Tree *raiz,int info,int nivel)
 	}
 }
 
-int buscarPai(Tree *raiz,int info)
+void buscarPai(Tree *raiz,int info,Tree *pai)
 {
-	Pilha *p;
-	init(&p);
-	int valorpai = 0;
-	return valorpai;
+	if(raiz != NULL)
+	{
+		if(raiz->info == info)
+		{
+			printf("Pai: %d",pai->info);
+		}
+		else
+		{
+			if(pai->esq == raiz)
+				pai = pai->esq;
+			else if(pai->dir == raiz)
+				pai = pai->dir;
+			buscarPai(raiz->esq,info,pai);
+			buscarPai(raiz->dir,info,pai);
+		}		
+	}
 }
 
 int main()
 {
 	Tree *raiz = NULL;
+	Tree *pai = NULL;
 	int nivel = 0;
 	insere(&raiz,1,0,' ');
 	insere(&raiz,2,1, 'e');
@@ -91,8 +104,9 @@ int main()
 	insere(&raiz,5,2, 'd');
 	insere(&raiz,6,3, 'e');
 	insere(&raiz,7,3, 'd');
+	pai = raiz;
 	//verificarNivel(raiz,7,nivel);
-	printf("\nValor do Pai: %d",buscarPai(raiz,4));
+	buscarPai(raiz,7,pai);
 	return 0;
 }
 
