@@ -54,41 +54,63 @@ void insere(Tree **raiz, int info, int info_pai,char lado)
 	}
 }
 
-void verificarNivel(Tree *raiz,int info,int nivel)
+void verificarNivel(Tree *raiz,int info,int cont,int *nivel)
 {
 	if(raiz != NULL)
 	{
 		if(raiz->info == info)
-		{
-			printf("Nivel Encontrado: %d",++nivel);
-		}
+			*nivel = cont;
 		else
 		{
-			nivel++;
-			verificarNivel(raiz->esq,info,nivel);
-			verificarNivel(raiz->dir,info,nivel);
-			
+			verificarNivel(raiz->esq,info,cont+1,&*nivel);
+			if(*nivel == 0)
+				verificarNivel(raiz->dir,info,cont+1,&*nivel);
 		}
 	}
 }
 
-void buscarPai(Tree *raiz,int info,Tree *pai)
+void buscarPai(Tree *raiz,int info,Tree **pai)
 {
 	if(raiz != NULL)
 	{
-		if(raiz->info == info)
-		{
-			printf("Pai: %d",pai->info);
-		}
+		if(raiz->info == info || (raiz->esq != NULL && raiz->esq->info==info) || (raiz->dir!=NULL && raiz->dir->info==info))
+			*pai,raiz;
 		else
 		{
-			if(pai->esq == raiz)
-				pai = pai->esq;
-			else if(pai->dir == raiz)
-				pai = pai->dir;
-			buscarPai(raiz->esq,info,pai);
-			buscarPai(raiz->dir,info,pai);
-		}		
+			buscarPai(raiz->esq,info,&*pai);
+			if(*pai == NULL)
+				buscarPai(raiz->dir,info,&*pai);
+		}
+	}
+}
+
+void preOrdem(Tree *raiz)
+{
+	if(raiz!=NULL)
+	{
+		printf("%d ",raiz->info);
+		preOrdem(raiz->esq);
+		preOrdem(raiz->dir);
+	}
+}
+
+void inOrdem(Tree *raiz)
+{
+	if(raiz != NULL)
+	{
+		inOrdem(raiz->esq);
+		printf("%d ",raiz->info);
+		inOrdem(raiz->dir);
+	}
+}
+
+void posOrdem(Tree *raiz)
+{
+	if(raiz != NULL)
+	{
+		posOrdem(raiz->esq);
+		posOrdem(raiz->dir);
+		printf("%d ",raiz->info);
 	}
 }
 
@@ -96,19 +118,29 @@ int main()
 {
 	Tree *raiz = NULL;
 	Tree *pai = NULL;
-	int nivel = 0;
-	insere(&raiz,1,0,' ');
-	insere(&raiz,2,1, 'e');
-	insere(&raiz,3,1, 'd');
-	insere(&raiz,4,2, 'e');
-	insere(&raiz,5,2, 'd');
-	insere(&raiz,6,3, 'e');
-	insere(&raiz,7,3, 'd');
+	int nivel = 1;
+	int retorno = 0;
+	insere(&raiz,50,0, ' ');
+	insere(&raiz,20,50, 'e');
+	insere(&raiz,10,20, 'e');
+	insere(&raiz,40,20, 'd');
+	insere(&raiz,30,40, 'e');
+	insere(&raiz,60,50, 'd');
+	insere(&raiz,70,60, 'd');
 	pai = raiz;
-	//verificarNivel(raiz,7,nivel);
-	buscarPai(raiz,7,pai);
+	verificarNivel(raiz,50,nivel,&retorno);
+	printf("Nivel: %d\n",retorno);
+	buscarPai(raiz,90,&pai);
+	printf("Pai: %d\n",pai->info);
+	preOrdem(raiz);
+	printf("\n");
+	inOrdem(raiz);
+	printf("\n");
+	posOrdem(raiz);
 	return 0;
 }
 
-//Verificar qual o nivel ou profundidade de um nó
-//Retorno o pai de um nó
+//Verificar qual o nivel ou profundidade de um nó. *Feito
+//Retorno o pai de um nó. *Feito
+//Tornar uma arvore Vazia( Free em todos os nodos da arvore ).
+// Exibir a arvore no formato de arvore.
