@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "tadpilha.h"
+#include <conio.h>
 
 struct tree
 {
@@ -114,6 +115,27 @@ void posOrdem(Tree *raiz)
 	}
 }
 
+void *esvaziaArvore(Tree **raiz)
+{
+	if(*raiz != NULL)
+	{
+		esvaziaArvore(&(*raiz)->esq);
+		esvaziaArvore(&(*raiz)->dir);
+		free(&*raiz);
+	}
+}
+
+void desenhaArvore(Tree *raiz)
+{
+	while(raiz != NULL )
+	{
+		if(raiz->dir != NULL)
+			raiz = raiz->dir;
+		else if(raiz->esq != NULL)
+			raiz = raiz->esq;
+	}
+}
+
 int main()
 {
 	Tree *raiz = NULL;
@@ -137,6 +159,12 @@ int main()
 	inOrdem(raiz);
 	printf("\n");
 	posOrdem(raiz);
+	//raiz = esvaziaArvore(&raiz);
+	//insere(&raiz,50,0, ' ');
+	//printf("\n");
+	//posOrdem(raiz);
+	printf("\n");
+	desenhaArvore(raiz);
 	return 0;
 }
 
