@@ -30,25 +30,25 @@ Tree *top(Pilha *P)
 		return NULL;
 }
 
-void pop(Pilha **P,Tree *arvore)
+void pop(Pilha **P,Tree **arvore)
 {
 	Pilha *aux;
 	if(!isEmpty(*P))
 	{
 		aux = *P;
-		arvore = (*P)->arvore;
+		*arvore = (*P)->arvore;
 		*P = (*P)->prox;
 		free(aux);
 	}
 	else
-		arvore = NULL;
+		*arvore = NULL;
 }
 
 void push(Pilha **P,Tree *arvore)
 {
 	Pilha *nova = (Pilha*)malloc(sizeof(Pilha));
 	nova->arvore = arvore;
-	nova->prox = *P;
+  	nova->prox = *P;
 	*P = nova;
 }
 
@@ -181,26 +181,58 @@ void *esvaziaArvore(Tree **raiz)
 	}
 }
 
+/*void exibeAtomoI(ListaGen *L)
+{
+	Pilha *P;
+	init(&P);
+	push(&P,L);
+	while(!isEmpty(P))
+	{
+		if(!Nula(L))
+		{
+			pop(&P,&L);
+			while(!Nula(L) && !Atomo(L))
+			{
+				push(&P,L);
+				L = Head(L);
+			}
+			if(Atomo(L))
+				printf("%s",L->no.info);
+		}
+		pop(&P,&L);
+		L = Tail(L);
+		if(!Nula(L))
+			push(&P,L);
+	}	
+}*/
+
 void desenhaArvore(Tree *raiz)
 {
-	Pilha *P = NULL;
+	int flag = 0;
+	Pilha *P;
 	init(&P);
 	push(&P,raiz);
-	while(raiz != NULL )
-	{
-		pop(&P,raiz);
-		if(raiz != NULL)
+	while(!isEmpty(P))
+	{	
+		pop(&P,&raiz);
+		while(raiz != NULL && flag != 1)
 		{
 			push(&P,raiz);
-			push(&P,raiz->esq);
+			raiz = raiz->esq;
 		}
-		else
+		if(flag != 1)
+			pop(&P,&raiz);
+		if(raiz != NULL)
 		{
-			if(!isEmpty(P))
+			if(flag != 1)
+				pop(&P,&raiz);
+			raiz = raiz->dir;
+			if(raiz != NULL)
 			{
-				pop(&P,raiz);
-				printf("%d",raiz->info);
+				push(&P,raiz);
 			}
+			else
+				flag = 1;
 		}
 	}
 }
