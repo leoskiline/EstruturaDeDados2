@@ -83,6 +83,35 @@ void *BuscaR(Tree *raiz,int info,Tree **busca)
 	}
 }
 
+void exclusao(Tree **raiz,Tree *e,Tree *pai)
+{
+	if(e!=NULL)
+	{
+		if(e->esq == NULL && e->dir==NULL)//eh folha
+		{
+			if(e != pai)
+			{
+				if(e->info > pai->info) //Lado Direito
+					pai->dir = NULL;
+				else//Lado Esquerdo
+					pai->esq = NULL;
+			}
+			else // e == pai
+				*raiz = NULL;
+			free(e);
+		}
+		else
+		if(e->dir == NULL && e->esq != NULL || e->dir != NULL && e->esq == NULL)// e tem 1 filho
+		{
+			
+		}
+		else// tem 2 filhos
+		{
+			
+		}
+	}
+}
+
 int main()
 {
 	Tree *raiz = NULL;
