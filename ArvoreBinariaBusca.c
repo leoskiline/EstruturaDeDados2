@@ -83,7 +83,45 @@ void *BuscaR(Tree *raiz,int info,Tree **busca)
 	}
 }
 
-void exclusao(Tree **raiz,Tree *e,Tree *pai)
+void balanceamento(Tree **raiz)
+{
+	Tree *no,*e,*pai;
+	int aux,qdir,qesq,FB;
+	Fila *F;
+	init(&F);
+	enqueue(&F,*raiz);
+	while(!isEmpty(F))
+	{
+		dequeue(&F,&no);
+		do{
+			qdir = qesq = 0;
+			quantNo(no->dir,&qdir);
+			quantoNo(no->esq,&qesq); // usar pre ordem
+			FB = qdir - qesq;
+			if(FB < -1 || FB > 1)// abs(FB) > 1
+			{
+				int aux = no->info;
+				Busca(*raiz,aux,&e,&pai);
+				if(no->esq == NULL)
+					no = no->dir;
+				else if(no->dir == null)
+					no = no->esq;
+					
+				if(fb > 0)
+					exclusao(&*raiz,e,pai,'d');
+				else
+					exclusao(&*raiz,e,pai,'e');
+				insere(&*raiz,aux);
+			}
+		}while(FB< -1 || FB > 1);
+		if(no->esq != null)
+			enqueue(&F,no->esq);
+		if(no->dir != null)
+			enqueue(&F,no->dir);
+	}
+}
+
+void exclusao(Tree **raiz,Tree *e,Tree *pai,char lado)
 {
 	if(e!=NULL)
 	{
@@ -107,7 +145,14 @@ void exclusao(Tree **raiz,Tree *e,Tree *pai)
 		}
 		else// tem 2 filhos
 		{
-			
+			if(lado == 'e') // FB = SomaDir-SomaEsq = + ou -. Se + Direita, se - Esquerda o substituto
+			{
+				//substituto da esquerda
+			}
+			else // lado == 'd'
+			{
+				//substituto da direita
+			}
 		}
 	}
 }
