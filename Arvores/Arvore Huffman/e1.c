@@ -50,8 +50,11 @@ void ProcessarString(char string[200],int *total)
 	}
 	*total = i;
 	int j,k;
-	float freq[50];
-	freq[0] = 0;
+	int freq[50];
+	for(j = 0;j<50;j++)
+	{
+		freq[j] = 0;
+	}	
 	for(j = 0;j<i;j++)
 	{
 		for(k = 0;k < i;k++)
@@ -64,6 +67,13 @@ void ProcessarString(char string[200],int *total)
 	}
 	for(j = 0;j < i;j++)
 	{
-		printf("%s - %f\n",palavras[j],freq[j]);
+		for(k = 0;k < i;k++)
+		{
+			if(stricmp(palavras[j],palavras[k]) == 0)
+			{
+				if(freq[j] > 1)
+					printf("%s - %d\n",palavras[j],freq[j]);
+			}
+		}	
 	}
 }
