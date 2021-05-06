@@ -7,7 +7,7 @@ struct tabela
 {
 	int simbolo;
 	float frequencia;
-	char letra[30];	
+	char palavra[30];	
 	struct tabela *prox;
 }typedef Tabela;
 
@@ -25,29 +25,45 @@ struct lista
 	struct lista *prox;
 }typedef Lista;
 
+
 int main()
 {
 	char string[200];
 	strcpy(string,"Amo como ama o amor. Nao conheco nenhuma outra razao para amar senao amar. Que queres que te diga, alem de que te amo, se o que quero dizer-te e que te amo?");
-	ConstroiTabela(string);
+	int total = 0;
+	ProcessarString(string,&total);
+	printf("%d",total);
 	return 0;
 }
 
-void ConstroiTabela(char string[200])
+void ProcessarString(char string[200],int *total)
 {
 	char *pch;
 	pch = strtok(string," ");
-	char palavra[50][10];
 	int i = 0;
+	char palavras[50][10];
 	while(pch != NULL)
 	{
-		strcpy(palavra[i],pch);
+		strcpy(palavras[i],pch);
 		i++;
 		pch = strtok(NULL," ");
 	}
-	int j = 0;
-	for(j = 0; j < 50 && !strchr(palavra[i],'\0');j++)
+	*total = i;
+	int j,k;
+	float freq[50];
+	freq[0] = 0;
+	for(j = 0;j<i;j++)
 	{
-		printf("%s\n",palavra[j]);
+		for(k = 0;k < i;k++)
+		{
+			if(stricmp(palavras[j],palavras[k]) == 0)
+			{
+				freq[j]++;
+			}
+		}
+	}
+	for(j = 0;j < i;j++)
+	{
+		printf("%s - %f\n",palavras[j],freq[j]);
 	}
 }
