@@ -23,12 +23,10 @@ int main()
 {
 	union byte uval;
 	uval.num = 12;
-	printf("1286432168421");
-	printf("\n");
-	printf("%d  ",uval.bi.b0);
-	printf("%d ",uval.bi.b1);
-	printf("%d ",uval.bi.b2);
-	printf("%d ",uval.bi.b3);
+	printf("%d",uval.bi.b0);
+	printf("%d",uval.bi.b1);
+	printf("%d",uval.bi.b2);
+	printf("%d",uval.bi.b3);
 	printf("%d",uval.bi.b4);
 	printf("%d",uval.bi.b5);
 	printf("%d",uval.bi.b6);
