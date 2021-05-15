@@ -13,24 +13,23 @@ struct tabela
 struct tree
 {
 	float freq;
-	int simbolo;
+	int simb;
 	struct tree *esq;
 	struct tree *dir;
 }typedef Tree;
 
 struct lista
 {
-	float freq;
-	int simb;
+	Tree *arvore;
 	struct lista *prox;
 }typedef Lista;
 
 
-Tree *criarNoArvore(float freq[50],int i)
+Tree *criarNoArvore(float freq,int i)
 {
 	Tree *arv = (Tree*)malloc(sizeof(Tree));
-	arv->freq = freq[i];
-	arv->simbolo = i;
+	arv->freq = freq;
+	arv->simb = i;
 	arv->esq = NULL;
 	arv->dir = NULL;
 	return arv;
@@ -39,22 +38,44 @@ Tree *criarNoArvore(float freq[50],int i)
 Lista *criarNoLista(float freq,int simb)
 {
 	Lista *l = (Lista*)malloc(sizeof(Lista));
-	l->freq = freq;
-	l->simb = simb;
+	l->arvore = criarNoArvore(freq,simb);
 	l->prox = NULL;
 }
 
 
-
-void CriarNosArvore(Tree *arv[50],int total,float freq[50])
+void arvoreHuffman(Lista **l,Tree **arvore)
 {
-	int i;
-	for(i = 0;i < total;i++)
+	Tree *arv[2];
+	int i,j = 0;
+	float novafreq;
+	while((*l)->prox != NULL && j < 11)
 	{
-		arv[i] = criarNoArvore(freq,i);
+		i = 0;
+		while(*l != NULL && i < 2)
+		{
+			arv[i++] = (*l)->arvore;
+			*l = (*l)->prox;
+		}
+		novafreq = arv[0]->freq + arv[1]->freq;
+		if(*arvore == NULL)
+		{
+			*arvore = criarNoArvore(novafreq,-1);
+			if(arv[0]->freq > arv[1]->freq)
+			{
+				(*arvore)->dir = arv[0];
+				(*arvore)->esq = arv[1];
+			}
+			else
+			{
+				(*arvore)->dir = arv[1];
+				(*arvore)->esq = arv[0];
+			}
+		}
+		
+		printf("%d %f\n",(*l)->arvore->simb,(*l)->arvore->freq);
+		j++;
 	}
 }
-
 
 void preencherTabela(Tabela tab[50],int total,char palavras[50][10],float freq[50])
 {
@@ -158,7 +179,7 @@ void listaOrdenada(Lista **lista,float freq[50])
 	Lista *aux2 = *lista;
 	while(aux2->prox != NULL)
 	{
-		printf("Simb: %d Freq %f\n",aux2->simb,aux2->freq);
+		printf("Simbolo: %d Frequencia %f\n",aux2->arvore->simb,aux2->arvore->freq);
 		aux2 = aux2->prox;
 	}
 }
@@ -188,6 +209,7 @@ int main()
 	strcpy(string,"amo como ama o amor nao conheco nenhuma outra razao para amar senao amar que queres que te diga alem de que te amo se o que quero dizer-te e que te amo");
 	int total = 0;
 	char palavras[50][10];
+	Tree *arvore = NULL;
 	float freq[50];
 	float freqtotal;
 	ProcessarString(string,&total,palavras,freq);
@@ -196,5 +218,6 @@ int main()
 	Lista *l = NULL;
 	ordenar(freq);
 	listaOrdenada(&l,freq);
+	arvoreHuffman(&l,&arvore);
 	return 0;
 }
