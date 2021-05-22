@@ -42,13 +42,22 @@ Lista *criarNoLista(float freq,int simb)
 	l->prox = NULL;
 }
 
+Lista *criarNoListaArv(Tree *arvore)
+{
+	Lista *l = (Lista*)malloc(sizeof(Lista));
+	l->arvore = arvore;
+	l->prox = NULL;
+}
 
-void arvoreHuffman(Lista **l,Tree **arvore)
+
+void arvoreHuffman(Lista **l)
 {
 	Tree *arv[2];
 	int i,j = 0;
+	Tree *arvore = NULL;
 	float novafreq;
-	while((*l)->prox != NULL && j < 11)
+	Lista *ant,*nova;
+	while((*l)->prox != NULL && j < 18)
 	{
 		i = 0;
 		while(*l != NULL && i < 2)
@@ -57,22 +66,26 @@ void arvoreHuffman(Lista **l,Tree **arvore)
 			*l = (*l)->prox;
 		}
 		novafreq = arv[0]->freq + arv[1]->freq;
-		if(*arvore == NULL)
+		arvore = criarNoArvore(novafreq,-1);
+		if(arv[0]->freq > arv[1]->freq)
 		{
-			*arvore = criarNoArvore(novafreq,-1);
-			if(arv[0]->freq > arv[1]->freq)
-			{
-				(*arvore)->dir = arv[0];
-				(*arvore)->esq = arv[1];
-			}
-			else
-			{
-				(*arvore)->dir = arv[1];
-				(*arvore)->esq = arv[0];
-			}
+			arvore->dir = arv[0];
+			arvore->esq = arv[1];
 		}
-		
-		printf("%d %f\n",(*l)->arvore->simb,(*l)->arvore->freq);
+		else
+		{
+			arvore->dir = arv[1];
+			arvore->esq = arv[0];
+		}
+		Lista *aux = *l;
+		while(aux->prox != NULL &&  aux->arvore->freq < arvore->freq)
+		{
+					ant = aux;
+					aux = aux->prox;
+		}
+		nova = criarNoListaArv(arvore);
+		ant->prox = nova;
+		nova->prox = aux;
 		j++;
 	}
 }
@@ -176,7 +189,11 @@ void listaOrdenada(Lista **lista,float freq[50])
 		i++;
 		aux = aux->prox;
 	}
-	Lista *aux2 = *lista;
+}
+
+void ImprimeLista(Lista *lista)
+{
+	Lista *aux2 = lista;
 	while(aux2->prox != NULL)
 	{
 		printf("Simbolo: %d Frequencia %f\n",aux2->arvore->simb,aux2->arvore->freq);
@@ -218,6 +235,7 @@ int main()
 	Lista *l = NULL;
 	ordenar(freq);
 	listaOrdenada(&l,freq);
-	arvoreHuffman(&l,&arvore);
+	arvoreHuffman(&l);
+	//ImprimeLista(l);
 	return 0;
 }
