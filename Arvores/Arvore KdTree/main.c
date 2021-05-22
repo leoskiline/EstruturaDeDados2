@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio2.h>
+#include <math.h>
 #define K 2
 
 struct kdtree
@@ -8,6 +9,12 @@ struct kdtree
 	int ponto[K];
 	struct kdtree *dir,*esq;
 } typedef kdTree;
+
+struct pontos
+{
+	int ponto[K];
+	struct pontos *prox;
+}typedef Ponto;
 
 kdTree *Cria_no(int ponto[K])
 {
@@ -35,6 +42,47 @@ void insereR(kdTree **raiz,int ponto[K],int n)
 		}
 }
 
+void pontosProximo(kdTree *raiz,Ponto **pontosProximos,int raio,int Pontos[2])
+{
+	int i;
+	double euclidiana;
+	euclidiana = sqrt(pow(raiz->ponto[0]-raiz->ponto[1],2) + pow(Pontos[0]-Pontos[1],2));
+	Ponto *aux;
+	if(raiz != NULL)
+	{
+		for(i = 0;i < K;i++)
+		{		
+			if(euclidiana <= raio)
+			{
+				if(i == K-1)
+				printf("(%d) - ",raiz->ponto[i]);
+				else
+				printf("(%d),", raiz->ponto[i]);
+				if((*pontosProximos) == NULL)
+				{
+					(*pontosProximos) = (Ponto*)malloc(sizeof(Ponto));
+					(*pontosProximos)->ponto[i] = raiz->ponto[i];
+					(*pontosProximos)->prox = NULL;
+				}
+				else
+				{
+					aux = (*pontosProximos);
+					while(aux->prox != NULL)
+					{
+						aux = aux->prox;
+					}
+					aux->ponto[i] = raiz->ponto[i];
+					aux->prox = NULL;
+				}
+				
+				
+			}
+		}
+		pontosProximo(raiz->esq,&(*pontosProximos),raio,Pontos);
+		pontosProximo(raiz->dir,&(*pontosProximos),raio,Pontos);
+	}
+}
+
 void exibeKdTree(kdTree *raiz,int x,int y,int dist)
 {
 	int i;
@@ -44,9 +92,9 @@ void exibeKdTree(kdTree *raiz,int x,int y,int dist)
 		for(i = 0;i < K;i++)
 		{
 			if(i == K-1)
-				printf("%d",raiz->ponto[i]);
+			printf("(%d)",raiz->ponto[i]);
 			else
-				printf("%d,",raiz->ponto[i]);
+			printf("(%d),",raiz->ponto[i]);
 		}
 			
 		if(raiz->esq != NULL)
@@ -72,5 +120,9 @@ int main()
 	for(i = 0;i<7;i++)
 		insereR(&raiz,pontos[i],0);
 	exibeKdTree(raiz,40,1,17);
+	Ponto *pontosProximos = NULL;
+	int Ponto[2] = {8,18};
+	printf("\n\n\n");
+	pontosProximo(raiz,&pontosProximos,10,Ponto);
 	return 0;
 }
