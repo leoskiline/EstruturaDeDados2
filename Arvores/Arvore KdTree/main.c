@@ -46,10 +46,12 @@ void pontosProximo(kdTree *raiz,Ponto **pontosProximos,int raio,int Pontos[2])
 {
 	int i;
 	double euclidiana;
-	euclidiana = sqrt(pow(raiz->ponto[0]-raiz->ponto[1],2) + pow(Pontos[0]-Pontos[1],2));
+	
 	Ponto *aux;
 	if(raiz != NULL)
 	{
+		euclidiana = sqrt(pow(raiz->ponto[1]-raiz->ponto[0],2) + pow(Pontos[1]-Pontos[0],2));
+		
 		for(i = 0;i < K;i++)
 		{		
 			if(euclidiana <= raio)
