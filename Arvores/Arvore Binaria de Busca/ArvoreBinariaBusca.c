@@ -66,6 +66,82 @@ Tree *Busca(Tree *raiz,int info)
 	return raiz;
 }
 
+void pre_ordem(Tree *raiz)
+{
+	if(raiz != NULL)
+	{
+		printf(" %d -",raiz->info);
+		pre_ordem(raiz->esq);
+		pre_ordem(raiz->dir);
+	}
+}
+
+void in_ordem(Tree *raiz)
+{
+	if(raiz != NULL)
+	{
+		in_ordem(raiz->esq);
+		printf(" %d -",raiz->info);
+		in_ordem(raiz->dir);
+	}
+}
+
+void pos_ordem(Tree *raiz)
+{
+	if(raiz != NULL)
+	{
+		pos_ordem(raiz->esq);
+		pos_ordem(raiz->dir);
+		printf(" %d -",raiz->info);
+	}
+}
+
+void esvaziarArvore(Tree **raiz)
+{
+	if(*raiz != NULL)
+	{
+		esvaziarArvore(&(*raiz)->esq);
+		esvaziarArvore(&(*raiz)->dir);
+		free(*raiz);
+		*raiz = NULL;
+	}
+}
+
+int Nivel(Tree *raiz,int info)
+{
+	int nivel = 1;
+	while(raiz != NULL && raiz->info != info)
+	{
+		if(info > raiz->info)
+			raiz = raiz->dir;
+		else
+			raiz = raiz->esq;
+		nivel++;
+	}
+	return nivel;
+}
+
+Tree *Pai(Tree *raiz,int info)
+{
+	Tree *pai = NULL;
+	if(raiz->info == info)
+	{
+		pai = raiz;
+	}
+	else
+	{
+		while(raiz != NULL && raiz->info != info)
+		{
+			pai = raiz;
+			if(info > raiz->info)
+				raiz = raiz->dir;
+			else
+				raiz = raiz->esq;
+		}
+	}	
+	return pai;
+}
+
 
 void *BuscaR(Tree *raiz,int info,Tree **busca)
 {
@@ -83,7 +159,7 @@ void *BuscaR(Tree *raiz,int info,Tree **busca)
 	}
 }
 
-void balanceamento(Tree **raiz)
+/*void balanceamento(Tree **raiz)
 {
 	Tree *no,*e,*pai;
 	int aux,qdir,qesq,FB;
@@ -119,7 +195,7 @@ void balanceamento(Tree **raiz)
 		if(no->dir != null)
 			enqueue(&F,no->dir);
 	}
-}
+}*/
 
 void exclusao(Tree **raiz,Tree *e,Tree *pai,char lado)
 {
@@ -160,11 +236,17 @@ void exclusao(Tree **raiz,Tree *e,Tree *pai,char lado)
 int main()
 {
 	Tree *raiz = NULL;
-	InsereR(&raiz,10);
-	InsereR(&raiz,12);
-	InsereR(&raiz,11);
-	InsereR(&raiz,30);
-	InsereR(&raiz,5);
+	insere(&raiz,10);
+	insere(&raiz,12);
+	insere(&raiz,11);
+	insere(&raiz,30);
+	insere(&raiz,5);
+	insere(&raiz,4);
+	//printf("Nivel de %d eh %d.\n",5,Nivel(raiz,5));
+	//printf("Pai: %d\n",Pai(raiz,5)->info);
+	pos_ordem(raiz);
+	esvaziarArvore(&raiz);
+	pos_ordem(raiz);
 	return 0;
 }
 
