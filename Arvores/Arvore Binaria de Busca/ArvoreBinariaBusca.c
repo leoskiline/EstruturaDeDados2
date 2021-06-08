@@ -1,12 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 struct tree
 {
 	int info;
 	struct tree *esq,*dir;
 };
 typedef struct tree Tree;
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "pilhaAB.h"
+
+
 
 Tree *CriaNo(int info)
 {
@@ -73,6 +77,17 @@ void pre_ordem(Tree *raiz)
 		printf(" %d -",raiz->info);
 		pre_ordem(raiz->esq);
 		pre_ordem(raiz->dir);
+	}
+}
+
+
+void pre_ordemI(Tree *raiz)
+{
+	Pilha *P;
+	init(&P);
+	if(P != NULL)
+	{
+		push(&p,raiz);
 	}
 }
 
