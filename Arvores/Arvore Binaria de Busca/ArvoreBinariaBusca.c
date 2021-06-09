@@ -8,7 +8,8 @@ typedef struct tree Tree;
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "pilhaAB.h"
+//#include "pilhaAB.h"
+#include "filaAB.h"
 
 
 
@@ -58,16 +59,28 @@ void InsereR(Tree **raiz,int info)
 	}
 }
 
-Tree *Busca(Tree *raiz,int info)
+void *Busca(Tree *raiz,int info,Tree **e,Tree **pai)
 {
 	while(raiz != NULL  && raiz->info != info)
 	{
+		*pai = raiz;
 		if(info > raiz->info)
 			raiz = raiz->dir;
 		else
 			raiz = raiz->esq;
 	}
-	return raiz;
+	*e = raiz;
+}
+
+void quantNo(Tree *raiz,int *qtd) // Pre Ordem
+{
+	if(raiz != NULL)
+	{
+		(*qtd)++;
+		quantNo(raiz->esq,qtd);
+		quantNo(raiz->dir,qtd);
+	}
+		
 }
 
 void pre_ordem(Tree *raiz)
@@ -81,15 +94,6 @@ void pre_ordem(Tree *raiz)
 }
 
 
-void pre_ordemI(Tree *raiz)
-{
-	Pilha *P;
-	init(&P);
-	if(P != NULL)
-	{
-		push(&p,raiz);
-	}
-}
 
 void in_ordem(Tree *raiz)
 {
@@ -174,7 +178,72 @@ void *BuscaR(Tree *raiz,int info,Tree **busca)
 	}
 }
 
-/*void balanceamento(Tree **raiz)
+void exclusao(Tree **raiz,Tree *e,Tree *pai,char lado)
+{
+	Tree *sub,*paisub;
+	if(e!=NULL)
+	{
+		if(e->esq == NULL && e->dir==NULL)//eh folha
+		{
+			if(e != pai)
+				if(e->info > pai->info) //Lado Direito
+					pai->dir = NULL;
+				else//Lado Esquerdo
+					pai->esq = NULL;
+			else // e == pai
+				*raiz = NULL;
+			free(e);
+		}
+		else if(e->dir == NULL && e->esq != NULL || e->dir != NULL && e->esq == NULL)// e tem 1 filho
+		{
+			if(e != pai)
+				if(e->info < pai->info)
+					if(e->esq != NULL)
+						pai->esq = e->esq;
+					else
+						pai->esq = e->dir;
+				else if(e->info > pai->info)
+					if(e->esq != NULL)
+						pai->dir = e->esq;
+					else
+						pai->dir = e->dir;	
+			else
+				*raiz = NULL;
+			free(e);
+		}
+		else// tem 2 filhos
+		{
+			if(lado == 'e') // FB = SomaDir-SomaEsq = + ou -. Se + Direita, se - Esquerda o substituto
+			{
+				paisub = e;
+				sub = e->esq;
+				while(sub->dir != NULL)
+				{
+					paisub = sub;
+					sub = sub->dir;
+				}
+				paisub->dir = sub->esq;
+				//substituto da esquerda
+			}
+			else // lado == 'd'
+			{
+				paisub = e;
+				sub = e->dir;
+				while(sub->esq != NULL)
+				{
+					paisub = sub;
+					sub = sub->esq;
+				}
+				paisub->esq = sub->dir;
+				//substituto da direita
+			}
+			e->info = sub->info;
+			free(sub);
+		}
+	}
+}
+
+void balanceamento(Tree **raiz)
 {
 	Tree *no,*e,*pai;
 	int aux,qdir,qesq,FB;
@@ -183,11 +252,11 @@ void *BuscaR(Tree *raiz,int info,Tree **busca)
 	enqueue(&F,*raiz);
 	while(!isEmpty(F))
 	{
-		dequeue(&F,&no);
+		dequeue(&F,no);
 		do{
 			qdir = qesq = 0;
 			quantNo(no->dir,&qdir);
-			quantoNo(no->esq,&qesq); // usar pre ordem
+			quantNo(no->esq,&qesq);
 			FB = qdir - qesq;
 			if(FB < -1 || FB > 1)// abs(FB) > 1
 			{
@@ -195,73 +264,44 @@ void *BuscaR(Tree *raiz,int info,Tree **busca)
 				Busca(*raiz,aux,&e,&pai);
 				if(no->esq == NULL)
 					no = no->dir;
-				else if(no->dir == null)
+				else if(no->dir == NULL)
 					no = no->esq;
 					
-				if(fb > 0)
+				if(FB > 0)
 					exclusao(&*raiz,e,pai,'d');
 				else
 					exclusao(&*raiz,e,pai,'e');
 				insere(&*raiz,aux);
 			}
 		}while(FB< -1 || FB > 1);
-		if(no->esq != null)
+		if(no->esq != NULL)
 			enqueue(&F,no->esq);
-		if(no->dir != null)
+		if(no->dir != NULL)
 			enqueue(&F,no->dir);
 	}
-}*/
-
-void exclusao(Tree **raiz,Tree *e,Tree *pai,char lado)
-{
-	if(e!=NULL)
-	{
-		if(e->esq == NULL && e->dir==NULL)//eh folha
-		{
-			if(e != pai)
-			{
-				if(e->info > pai->info) //Lado Direito
-					pai->dir = NULL;
-				else//Lado Esquerdo
-					pai->esq = NULL;
-			}
-			else // e == pai
-				*raiz = NULL;
-			free(e);
-		}
-		else
-		if(e->dir == NULL && e->esq != NULL || e->dir != NULL && e->esq == NULL)// e tem 1 filho
-		{
-			
-		}
-		else// tem 2 filhos
-		{
-			if(lado == 'e') // FB = SomaDir-SomaEsq = + ou -. Se + Direita, se - Esquerda o substituto
-			{
-				//substituto da esquerda
-			}
-			else // lado == 'd'
-			{
-				//substituto da direita
-			}
-		}
-	}
 }
+
+
 
 int main()
 {
 	Tree *raiz = NULL;
 	insere(&raiz,10);
+	insere(&raiz,8);
+	insere(&raiz,6);
+	insere(&raiz,9);
 	insere(&raiz,12);
-	insere(&raiz,11);
-	insere(&raiz,30);
-	insere(&raiz,5);
-	insere(&raiz,4);
+	insere(&raiz,14);
 	//printf("Nivel de %d eh %d.\n",5,Nivel(raiz,5));
 	//printf("Pai: %d\n",Pai(raiz,5)->info);
-	pos_ordem(raiz);
-	esvaziarArvore(&raiz);
-	pos_ordem(raiz);
+	pre_ordem(raiz);
+	//esvaziarArvore(&raiz);
+	int esq,dir;
+	esq = dir = 0;
+	pre_ordem(raiz);
+	quantNo(raiz->esq,&esq);
+	quantNo(raiz->dir,&dir);
+	//printf("Dir: %d Esq: %d\n",dir,esq);
 	return 0;
 }
 
